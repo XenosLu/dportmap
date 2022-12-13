@@ -1,15 +1,12 @@
 FROM python:3.11.1-alpine3.17
 # https://hub.docker.com/_/python
 LABEL maintainer="xenos <xenos.lu@gmail.com>"
-ENV PS1 '\h:\w\$ '
 
 COPY . /dportmap
 
 RUN apk add --no-cache \
             tzdata \
             &&\
-            ln -snf /usr/share/zoneinfo/$TZ /etc/localtime &&\
-            echo $TZ > /etc/timezone &&\
     apk add --no-cache \
             docker-cli \
             curl \
