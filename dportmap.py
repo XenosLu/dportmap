@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 import os
 import logging
+import re
+from time import sleep
 
 import docker
 
@@ -78,17 +80,15 @@ class UpnpIgd:
             print("-" * 79)
 
     def set_nat(self, name, ports):
-        import re
-        status = os.popen('upnpc -s').read()
-        igd = re.findall('Found valid IGD : (.*)',status)
+        status = os.popen("upnpc -s").read()
+        igd = re.findall("Found valid IGD : (.*)", status)
         if not igd:
-            logger.warning('IGD not found.')
+            logger.warning("IGD not found.")
             return
         igd = igd[0]
-        lan_ip = re.findall('Local LAN ip address : (.*)',status)[0]
+        lan_ip = re.findall("Local LAN ip address : (.*)", status)[0]
 
         expires = 4800
-        extra_paras = ''
         for i in ports:
             protocol, port = i.split(".")
             comment = ".".join([protocol, port, name])
@@ -100,8 +100,8 @@ class UpnpIgd:
 
 def main():
     UpnpIgd()
-    from time import sleep
-    logger.info('sleep 3600s')
+
+    logger.info("sleep 3600s")
     sleep(3600)
     # supported labels:
     # upnp.igd.enable=False  # true if not mentioned
@@ -114,6 +114,8 @@ def main():
     # env: interval 1h default
 
     # docker upnp portmapping
+
+
 if __name__ == "__main__":
     init_log()
     main()
