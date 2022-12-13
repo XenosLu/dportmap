@@ -82,10 +82,10 @@ class UpnpIgd:
         status = os.popen('upnpc -s').read()
         igd = re.findall('Found valid IGD : (.*)',status)
         if not igd:
-            logger.warning('igd not found.')
+            logger.warning('IGD not found.')
             return
         igd = igd[0]
-        lan_ip = re.findall('Local LAN ip addressx : (.*)',status)[0]
+        lan_ip = re.findall('Local LAN ip address : (.*)',status)[0]
 
         expires = 4800
         extra_paras = ''
