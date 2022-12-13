@@ -99,8 +99,10 @@ class UpnpIgd:
 
 
 def main():
-    logger.info(os.path.dirname(os.path.abspath(__file__)))
     UpnpIgd()
+    from time import sleep
+    logger.info('sleep 3600s')
+    sleep(3600)
     # supported labels:
     # upnp.igd.enable=False  # true if not mentioned
     # upnp.igd.tcp.17288=false
