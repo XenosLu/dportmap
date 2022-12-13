@@ -1,4 +1,5 @@
-FROM python:3.11.0-alpine3.15
+FROM python:3.11.1-alpine3.16
+# https://hub.docker.com/_/python
 LABEL maintainer="xenos <xenos.lu@gmail.com>"
 ENV PS1 '\h:\w\$ '
 
