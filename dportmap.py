@@ -30,10 +30,12 @@ def init_log(use_file=False):
     logger.setLevel(logging.DEBUG)
 
 
-class UpnpIgd:
+class DPortMap:
     def __init__(self):
         self.client = docker.DockerClient(version="auto", timeout=50)
+        self.upnp_client = UpnpClient()
         self.main()
+        
 
     def get_ports(self, ports):
         all_ports = set()
@@ -91,15 +93,31 @@ class UpnpIgd:
         expires = 4800
         for i in ports:
             protocol, port = i.split(".")
-            comment = ".".join([protocol, port, name])
-            print(comment)
-            # 'upnpc -s'
-            cmd = f'upnpc -u {igd} -e "{comment}" -a {lan_ip} {port} {port} {protocol} {expires}'
-            os.system(cmd)
 
+            self.upnp_client.map_port(protocol, port, name)
+            # cmd = f'upnpc -u {igd} -e "{comment}" -a {lan_ip} {port} {port} {protocol} {expires}'
+            # os.system(cmd)
+
+
+class UpnpClient:
+    def __init__(self, expires=4800):
+        status = os.popen("upnpc -s").read()
+        igd = re.findall("Found valid IGD : (.*)", status)
+        if not igd:
+            logger.warning("IGD not found.")
+            return
+        self.igd = igd[0]
+        self.lan_ip = re.findall("Local LAN ip address : (.*)", status)[0]
+        self.expires = expires
+
+    def map_port(self, protocol, port, name):
+        comment = ".".join([protocol, port, name])
+        print(comment)
+        cmd = f'upnpc -u {self.igd} -e "{comment}" -a {self.lan_ip} {port} {port} {protocol} {self.expires} | grep external'
+        os.system(cmd)
 
 def main():
-    UpnpIgd()
+    DPortMap()
 
     logger.info("sleep 3600s")
     sleep(3600)
