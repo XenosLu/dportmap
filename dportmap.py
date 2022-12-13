@@ -78,7 +78,15 @@ class UpnpIgd:
             print("-" * 79)
 
     def set_nat(self, name, ports):
-        ip = "192.168.2.150"
+        import re
+        status = os.popen('upnpc -s').read()
+        igd = re.findall('Found valid IGD : (.*)',status)
+        if not igd:
+            logger.warning('igd not found.')
+            return
+        igd = igd[0]
+        lan_ip = re.findall('Local LAN ip addressx : (.*)',status)[0]
+
         expires = 4800
         extra_paras = ''
         for i in ports:
@@ -86,7 +94,7 @@ class UpnpIgd:
             comment = ".".join([protocol, port, name])
             print(comment)
             # 'upnpc -s'
-            cmd = f'upnpc {extra_paras} -e "{comment}" -a {ip} {port} {port} {protocol} {expires}'
+            cmd = f'upnpc -u {igd} -e "{comment}" -a {lan_ip} {port} {port} {protocol} {expires}'
             os.system(cmd)
 
 
