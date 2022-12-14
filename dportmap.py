@@ -75,6 +75,7 @@ class DPortMap:
 
     def main(self):
         for container in self.client.containers.list():
+            # prefer use value of label "com.docker.compose.project" as name than use container name
             name = container.labels.get("com.docker.compose.project", container.name)
             enable, enabled_ports, disabled_ports = self.get_conf(container.labels)
             if not enable:
@@ -117,16 +118,8 @@ def main():
     logger.info("sleep 3600s")
     sleep(3600)
     # supported labels:
-    # upnp.igd.enable=False  # true if not mentioned
-    # upnp.igd.tcp.17288=false
-    # upnp.igd.udp.3333  # true can leave out
-    # prefer use label "com.docker.compose.project" as name than container name
     # to-do: duration as env
-    # read igd use 'upnpc -s' command
-    # env: need enable first
     # env: interval 1h default
-
-    # docker upnp portmapping
 
 
 if __name__ == "__main__":
