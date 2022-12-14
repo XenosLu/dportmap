@@ -15,7 +15,7 @@
 
 # <span id="chinese">中文版</span>
 ## dportmap - 自动将docker容器的端口映射到IGD设备上（通常是家用路由器）
-适用场景，单机docker
+适用场景，单机docker需要将容器中的大多数端口映射至公网
 
 docker-compose 样例
 ```
@@ -42,7 +42,23 @@ WATCH=ALL  # 该值为all时会监控所有容器除了包含label "upnp.igd.ena
 - upnp.igd.udp.3333  # =true可以省略
 
 
+---
 # <span id="english">English Version</span>
+## dportmap - 自动将docker容器的端口映射到IGD设备上（通常是家用路由器）
+适用场景，单机docker需要将容器中的大多数端口映射至公网
+docker-compose sample
+```
+services:
+  single:
+    environment:
+    - WATCH=ALL  # will watch all container except with label "upnp.igd.enable=False"
+    image: xenocider/dportmap:latest
+    network_mode: host
+    restart: always
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+version: '3'
+```
 
 Supported labels：
 - upnp.igd.enable=False  # true if value is none

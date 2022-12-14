@@ -34,7 +34,7 @@ class DPortMap:
     def __init__(self):
         self.watch_all = os.environ.get("WATCH") == "ALL"
         if self.watch_all:
-            logger.info('Watch all containers except label "upnp.igd.enable=False"')
+            logger.info('Watch all containers except label with "upnp.igd.enable=False"')
         else:
             logger.info('Only watch container with label "upnp.igd.enable=True"')
         self.client = docker.DockerClient(version="auto", timeout=50)
