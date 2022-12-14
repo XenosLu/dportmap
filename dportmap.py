@@ -32,6 +32,7 @@ def init_log(use_file=False):
 
 class DPortMap:
     def __init__(self):
+        self.watch_all = os.environ.get("WATCH") == "ALL"
         self.client = docker.DockerClient(version="auto", timeout=50)
         self.upnp_client = UpnpClient()
         self.main()
@@ -50,13 +51,20 @@ class DPortMap:
         """get conf from labels"""
         enabled_ports = set()
         disabled_ports = set()
-        enable = True
+        enable = False
+        if self.watch_all:
+            enable = True
+            logger.info("Watch all containers except label upnp.igd.enable=False")
+        else:
+            logger.info("Only watch container with label upnp.igd.enable=True")
         for label, value in labels.items():
             if not label.startswith("upnp.igd."):
                 continue
             label = label.replace("upnp.igd.", "")
             if value in ("false", "False"):
                 value = False
+            else:
+                value = True
             if label == "enable":
                 enable = value
                 continue
@@ -84,6 +92,7 @@ class DPortMap:
         for i in ports:
             protocol, port = i.split(".")
             self.upnp_client.map_port(protocol, port, name)
+
 
 class UpnpClient:
     def __init__(self, expires=4800):
