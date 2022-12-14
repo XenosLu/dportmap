@@ -35,7 +35,6 @@ class DPortMap:
         self.client = docker.DockerClient(version="auto", timeout=50)
         self.upnp_client = UpnpClient()
         self.main()
-        
 
     def get_ports(self, ports):
         all_ports = set()
@@ -82,22 +81,9 @@ class DPortMap:
             print("-" * 79)
 
     def set_nat(self, name, ports):
-        status = os.popen("upnpc -s").read()
-        igd = re.findall("Found valid IGD : (.*)", status)
-        if not igd:
-            logger.warning("IGD not found.")
-            return
-        igd = igd[0]
-        lan_ip = re.findall("Local LAN ip address : (.*)", status)[0]
-
-        expires = 4800
         for i in ports:
             protocol, port = i.split(".")
-
             self.upnp_client.map_port(protocol, port, name)
-            # cmd = f'upnpc -u {igd} -e "{comment}" -a {lan_ip} {port} {port} {protocol} {expires}'
-            # os.system(cmd)
-
 
 class UpnpClient:
     def __init__(self, expires=4800):
@@ -115,6 +101,7 @@ class UpnpClient:
         print(comment)
         cmd = f'upnpc -u {self.igd} -e "{comment}" -a {self.lan_ip} {port} {port} {protocol} {self.expires} | grep external'
         os.system(cmd)
+
 
 def main():
     DPortMap()
