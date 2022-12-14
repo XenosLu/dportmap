@@ -94,7 +94,7 @@ class DPortMap:
 
 
 class UpnpClient:
-    def __init__(self, expires=4800):
+    def __init__(self, duration=4800):
         status = os.popen("upnpc -s").read()
         igd = re.findall("Found valid IGD : (.*)", status)
         if not igd:
@@ -102,12 +102,12 @@ class UpnpClient:
             return
         self.igd = igd[0]
         self.lan_ip = re.findall("Local LAN ip address : (.*)", status)[0]
-        self.expires = expires
+        self.duration = duration
 
     def map_port(self, protocol, port, name):
         comment = ".".join([protocol, port, name])
         print(comment)
-        cmd = f'upnpc -u {self.igd} -e "{comment}" -a {self.lan_ip} {port} {port} {protocol} {self.expires} | grep external'
+        cmd = f'upnpc -u {self.igd} -e "{comment}" -a {self.lan_ip} {port} {port} {protocol} {self.duration} | grep external'
         os.system(cmd)
 
 
@@ -121,7 +121,7 @@ def main():
     # upnp.igd.tcp.17288=false
     # upnp.igd.udp.3333  # true can leave out
     # prefer use label "com.docker.compose.project" as name than container name
-    # to-do: expires as env
+    # to-do: duration as env
     # read igd use 'upnpc -s' command
     # env: need enable first
     # env: interval 1h default
