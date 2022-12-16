@@ -114,10 +114,10 @@ class UpnpClient:
 
 
 def main():
-    DPortMap()
-
-    logger.info("sleep 3600s")
-    sleep(3600)
+    while True:
+        DPortMap()
+        logger.info("sleep 3600s")
+        sleep(3600)
     # supported labels:
     # to-do: duration as env
     # env: interval 1h default
