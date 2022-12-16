@@ -85,6 +85,7 @@ class DPortMap:
             needed_ports = (all_ports | enabled_ports) - disabled_ports
             if not needed_ports:
                 logger.info(f"no port found in {name}")
+                continue
             self.set_nat(name, needed_ports)
             print("-" * 79)
 
