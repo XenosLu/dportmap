@@ -13,7 +13,7 @@ RUN apk add --no-cache \
             vim \
             tree \
             nethogs \
-            miniupnpc \  # to remove
+            miniupnpc \
             build-base \
             &&\
     rm -rf /root/.cache
