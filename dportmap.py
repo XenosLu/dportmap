@@ -9,7 +9,7 @@ import miniupnpc
 import docker
 
 # Set file path as current path
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+# os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 logger = logging.getLogger(__name__)
 
@@ -126,7 +126,7 @@ class UpnpClient:
 
     def map_port(self, protocol, port, name):
         comment = ".".join([protocol, port, name])
-        print(comment)
+        logger.info(comment)
         self.upnp.addportmapping(
             int(port), protocol, self.upnp.lanaddr, int(port), comment, ""
         )
