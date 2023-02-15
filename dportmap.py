@@ -115,9 +115,9 @@ class UpnpClientOld:
 
 
 class UpnpClient:
-    def __init__(self, duration=4800):
+    def __init__(self):
         self.upnp = miniupnpc.UPnP()
-        self.duration = duration
+        # self.duration = duration
         self.discover()
 
     def discover(self):
@@ -128,7 +128,7 @@ class UpnpClient:
         comment = ".".join([protocol, port, name])
         print(comment)
         self.upnp.addportmapping(
-            port, protocol, self.upnp.lanaddr, port, comment, "", self.duration
+            int(port), protocol, self.upnp.lanaddr, int(port), comment, ""
         )
 
 
