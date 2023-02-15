@@ -4,7 +4,6 @@ import os
 import logging
 import re
 from time import sleep
-import miniupnpc
 
 import docker
 
@@ -96,7 +95,7 @@ class DPortMap:
             self.upnp_client.map_port(protocol, port, name)
 
 
-class UpnpClientOld:
+class UpnpClient:
     def __init__(self, duration=4800):
         status = os.popen("upnpc -s").read()
         igd = re.findall("Found valid IGD : (.*)", status)
@@ -112,24 +111,6 @@ class UpnpClientOld:
         print(comment)
         cmd = f'upnpc -u {self.igd} -e "{comment}" -a {self.lan_ip} {port} {port} {protocol} {self.duration} | grep external'
         os.system(cmd)
-
-
-class UpnpClient:
-    def __init__(self, duration=4800):
-        self.upnp = miniupnpc.UPnP()
-        self.duration = duration
-        self.discover()
-
-    def discover(self):
-        self.upnp.discover()
-        self.upnp.selectigd()
-
-    def map_port(self, protocol, port, name):
-        comment = ".".join([protocol, port, name])
-        print(comment)
-        self.upnp.addportmapping(
-            port, protocol, self.upnp.lanaddr, port, comment, "", self.duration
-        )
 
 
 def main():
