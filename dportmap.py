@@ -4,8 +4,9 @@ import os
 import logging
 import re
 from time import sleep
-import miniupnpc
+import sys
 
+import miniupnpc
 import docker
 
 # Set file path as current path
@@ -88,7 +89,7 @@ class DPortMap:
                 logger.info(f"no port found in {name}")
                 continue
             self.set_nat(name, needed_ports)
-            print("-" * 79)
+            print("-" * 79, file=sys.stderr)
 
     def set_nat(self, name, ports):
         for i in ports:
@@ -109,7 +110,7 @@ class UpnpClientOld:
 
     def map_port(self, protocol, port, name):
         comment = ".".join([protocol, port, name])
-        print(comment)
+        logger.info(comment)
         cmd = f'upnpc -u {self.igd} -e "{comment}" -a {self.lan_ip} {port} {port} {protocol} {self.duration} | grep external'
         os.system(cmd)
 
@@ -127,9 +128,8 @@ class UpnpClient:
     def map_port(self, protocol, port, name):
         comment = ".".join([protocol, port, name])
         logger.info(comment)
-        self.upnp.addportmapping(
-            int(port), protocol, self.upnp.lanaddr, int(port), comment, ""
-        )
+        port = int(port)
+        self.upnp.addportmapping(port, protocol, self.upnp.lanaddr, port, comment, "")
 
 
 def main():
